@@ -1,0 +1,163 @@
+[
+    {
+        "id": 1,
+        "boiler": "D",
+        "date": "05/04/2021",
+        "technicians_list": {
+            "technicians": [
+                {
+                    "first_name": "Peter"
+                },
+                {
+                    "first_name": "Daniel"
+                }
+            ]
+        },
+        "building": {
+            "buildings": [
+                {
+                    "address": "Urquiza 123",
+                    "type": "Particular"
+                }
+            ]
+        }
+    },
+    {
+        "id": 2,
+        "boiler": "B",
+        "date": "08/18/2021",
+        "technicians_list": {
+            "technicians": [
+                {
+                    "first_name": "Thomas"
+                },
+                {
+                    "first_name": "Robert"
+                }
+            ]
+        },
+        "building": {
+            "buildings": [
+                {
+                    "address": "Balcarce 555",
+                    "type": "Turner construction"
+                }
+            ]
+        }
+    },
+    {
+        "id": 3,
+        "boiler": "B",
+        "date": "04/13/2021",
+        "technicians_list": {
+            "technicians": [
+                {
+                    "first_name": "Thomas"
+                },
+                {
+                    "first_name": "Robert"
+                }
+            ]
+        },
+        "building": {
+            "buildings": [
+                {
+                    "address": "Moreno 555",
+                    "type": "CC construction"
+                }
+            ]
+        }
+    },
+    {
+        "id": 4,
+        "boiler": "A",
+        "date": "03/23/2021",
+        "technicians_list": {
+            "technicians": [
+                {
+                    "first_name": "George"
+                },
+                {
+                    "first_name": "Jake"
+                }
+            ]
+        },
+        "building": {
+            "buildings": [
+                {
+                    "address": "San Luis 123",
+                    "type": "M2 construction"
+                }
+            ]
+        }
+    },
+    {
+        "id": 5,
+        "boiler": "B",
+        "date": "03/18/2021",
+        "technicians_list": {
+            "technicians": [
+                {
+                    "first_name": "Thomas"
+                },
+                {
+                    "first_name": "Robert"
+                }
+            ]
+        },
+        "building": {
+            "buildings": [
+                {
+                    "address": "Suipacha 555",
+                    "type": "CC construction"
+                }
+            ]
+        }
+    },
+    {
+        "id": 6,
+        "boiler": "B",
+        "date": "04/15/2021",
+        "technicians_list": {
+            "technicians": [
+                {
+                    "first_name": "Thomas"
+                },
+                {
+                    "first_name": "Robert"
+                }
+            ]
+        },
+        "building": {
+            "buildings": [
+                {
+                    "address": "Ov Lagos 123",
+                    "type": "Particular"
+                }
+            ]
+        }
+    },
+    {
+        "id": 7,
+        "boiler": "B",
+        "date": "07/11/2021",
+        "technicians_list": {
+            "technicians": [
+                {
+                    "first_name": "Thomas"
+                },
+                {
+                    "first_name": "Robert"
+                }
+            ]
+        },
+        "building": {
+            "buildings": [
+                {
+                    "address": "Sarmiento 123",
+                    "type": "Particular"
+                }
+            ]
+        }
+    }
+]
