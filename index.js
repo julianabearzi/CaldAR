@@ -1,4 +1,5 @@
 const express = require('express');
+const buildingsRoutes = require('./routes/buildings.routes');
 const techniciansRoutes = require('./routes/technicians.routes');
 const ConstructionRoutes = require('./routes/construction-company.routes');
 const app = express();
@@ -6,6 +7,7 @@ const PORT = 3000;
 
 app.use(express.json());
 
+app.use(buildingsRoutes);
 app.use(techniciansRoutes);
 app.use(ConstructionRoutes);
 
