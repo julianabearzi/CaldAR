@@ -1,0 +1,257 @@
+[
+    {
+        "id": 1,
+        "category": "A",
+        "stock": "5",
+        "installed": "19",
+        "reserved": "0",
+        "client_list": {
+            "buildings": [
+                {
+                    "address": "Oroño 123",
+                    "type": "MSR construction"
+                },
+                {
+                    "address": "Brown 123",
+                    "type": "BBZ construction"
+                },
+                {
+                    "address": "Callao 123",
+                    "type": "BBZ construction"
+                },
+                {
+                    "address": "San Luis 123",
+                    "type": "M2 construction"
+                },
+                {
+                    "address": "Balcarce 123",
+                    "type": "Turner construction"
+                },
+                {
+                    "address": "Suipacha 123",
+                    "type": "Turner construction"
+                },
+                {
+                    "address": "Moreno 123",
+                    "type": "CC construction"
+                },
+                {
+                    "address": "Ov Lagos 123",
+                    "type": "Particular"
+                },
+                {
+                    "address": "Entre Rios 123",
+                    "type": "Particular"
+                },
+                {
+                    "address": "Sarmiento 123",
+                    "type": "Particular"
+                },
+                {
+                    "address": "Urquiza 123",
+                    "type": "Particular"
+                }
+            ]
+        },
+        "technicians_list": {
+            "technicians": [
+                {
+                    "firstName": "George"
+                },
+                {
+                    "firstName": "Jacob"
+                },
+                {
+                    "firstName": "John"
+                },
+                {
+                    "firstName": "Michael"
+                },
+                {
+                    "firstName": "Peter"
+                },
+                {
+                    "firstName": "David"
+                },
+                {
+                    "firstName": "Aron"
+                },
+                {
+                    "firstName": "Luca"
+                },
+                {
+                    "firstName": "Jack"
+                },
+                {
+                    "firstName": "Jake"
+                }
+            ]
+        },
+        "monthly_maintenance": "8",
+        "eventual_maintenance": "2"
+    },
+    {
+        "id": 2,
+        "category": "B",
+        "stock": "10",
+        "installed": "19",
+        "reserved": "0",
+        "client_list": {
+            "buildings": [
+                {
+                    "address": "Oroño 555",
+                    "type": "MSR construction"
+                },
+                {
+                    "address": "Brown 555",
+                    "type": "BBZ construction"
+                },
+                {
+                    "address": "Italia 555",
+                    "type": "BBZ construction"
+                },
+                {
+                    "address": "San Luis 555",
+                    "type": "M2 construction"
+                },
+                {
+                    "address": "Callao 555",
+                    "type": "M2 construction"
+                },
+                {
+                    "address": "Balcarce 555",
+                    "type": "Turner construction"
+                },
+                {
+                    "address": "Moreno 555",
+                    "type": "CC construction"
+                },
+                {
+                    "address": "Suipacha 555",
+                    "type": "CC construction"
+                },
+                {
+                    "address": "Ov Lagos 123",
+                    "type": "Particular"
+                },
+                {
+                    "address": "Entre Rios 123",
+                    "type": "Particular"
+                },
+                {
+                    "address": "Sarmiento 123",
+                    "type": "Particular"
+                }
+            ]
+        },
+        "technicians_list": {
+            "technicians": [
+                {
+                    "firstName": "Oscar"
+                },
+                {
+                    "firstName": "John"
+                },
+                {
+                    "firstName": "Peter"
+                },
+                {
+                    "firstName": "David"
+                },
+                {
+                    "firstName": "Aron"
+                },
+                {
+                    "firstName": "Robert"
+                },
+                {
+                    "firstName": "Jack"
+                },
+                {
+                    "firstName": "Harry"
+                },
+                {
+                    "firstName": "Jake"
+                },
+                {
+                    "firstName": "Thomas"
+                }
+            ]
+        },
+        "monthly_maintenance": "8",
+        "eventual_maintenance": "2"
+    },
+    {
+        "id": 3,
+        "category": "C",
+        "stock": "3",
+        "installed": "0",
+        "reserved": "2",
+        "client_list": {
+            "buildings": [
+                {
+                    "address": "Oroño 1500",
+                    "type": "MSR construction"
+                }
+            ]
+        },
+        "technicians_list": "no technicians found",
+        "monthly_maintenance": "8",
+        "eventual_maintenance": "2"
+    },
+    {
+        "id": 4,
+        "category": "D",
+        "stock": "2",
+        "installed": "2",
+        "reserved": "1",
+        "client_list": {
+            "buildings": [
+                {
+                    "address": "Balcarce 1500",
+                    "type": "MSR construction"
+                },
+                {
+                    "address": "Urquiza 123",
+                    "type": "Particular"
+                }
+            ]
+        },
+        "technicians_list": {
+            "technicians": [
+                {
+                    "firstName": "George"
+                },
+                {
+                    "firstName": "Michael"
+                },
+                {
+                    "firstName": "Peter"
+                },
+                {
+                    "firstName": "Simon"
+                },
+                {
+                    "firstName": "Charles"
+                },
+                {
+                    "firstName": "Oliver"
+                },
+                {
+                    "firstName": "Jack"
+                },
+                {
+                    "firstName": "Jacob"
+                },
+                {
+                    "firstName": "Thomas"
+                },
+                {
+                    "firstName": "Daniel"
+                }
+            ]
+        },
+        "monthly_maintenance": "8",
+        "eventual_maintenance": "2"
+    }
+]
