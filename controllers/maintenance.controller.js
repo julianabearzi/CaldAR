@@ -5,24 +5,24 @@ const getAllMaintenance = (req, res) => {
 };
 
 const getMaintenanceById = (req, res) => {
-    const idFound = maintenance.some(m => m.id === parseInt(req.params.param));
+    const idFound = maintenance.some(m => m.id === parseInt(req.params.id));
 
     if (idFound) {
-        res.json(maintenance.filter(m => m.id === parseInt(req.params.param)));
+        res.json(maintenance.filter(m => m.id === parseInt(req.params.id)));
     }
     else {
-        res.status(400).json({ msg: `No maintenance with the id ${req.params.param}` });
+        res.status(400).json({ msg: `No maintenance with the id ${req.params.id}` });
     }
 };
 
 const getMaintenanceByBoiler = (req, res) => {
-    const idFound = maintenance.some(m => m.boiler === (req.params.param));
+    const idFound = maintenance.some(m => m.boiler.toLowerCase() === (req.query.boiler.toLowerCase()));
 
     if (idFound) {
-        res.json(maintenance.filter(m => m.boiler === (req.params.param)));
+        res.json(maintenance.filter(m => m.boiler.toLowerCase() === (req.query.boiler.toLowerCase())));
     }
     else {
-        res.status(400).json({ msg: `No maintenance with the boiler ${req.params.param}` });
+        res.status(400).json({ msg: `No maintenance with the boiler ${req.query.boiler}` });
     }
 };
 
