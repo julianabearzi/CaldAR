@@ -1,12 +1,7 @@
 const buildings = require('../data/buildings.json');
 
 const getAllBuildings = (req, res) => {
-    const buildingsList = buildings;
-    if (buildingsList) {
-        res.json(buildingsList);
-    } else {
-        res.status(400).json({ msg: `Error ` });
-    }
+        res.json(buildings);
 };
 
 const getBuildingById = (req, res) => {
