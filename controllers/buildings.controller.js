@@ -1,27 +1,32 @@
 const buildings = require('../data/buildings.json');
 
 const getAllBuildings = (req, res) => {
-    res.json(buildings);
+    const buildingsList = buildings;
+    if (buildingsList) {
+        res.json(buildingsList);
+    } else {
+        res.status(400).json({ msg: `Error ` });
+    }
 };
 
 const getBuildingById = (req, res) => {
-    const idFound = buildings.some(building => building.id === parseInt(req.params.param));
+    const idFound = buildings.some(building => building.id === parseInt(req.params.id));
 
     if (idFound) {
-        res.json(buildings.filter(building => building.id === parseInt(req.params.param)));
+        res.json(buildings.filter(building => building.id === parseInt(req.params.id)));
     } else {
-        res.status(400).json({ msg: `No building with the id of ${req.params.param}` });
+        res.status(400).json({ msg: `No building with the id of ${req.params.id}` });
     }
 };
 
 const getBuildingByType = (req, res) => {
 
-    const typeFound = buildings.some(building => building.type === (req.params.param));
+    const typeFound = buildings.some(building => building.type.toLowerCase() === (req.query.type.toLowerCase()));
 
     if (typeFound) {
-        res.json(buildings.filter(building => building.type === (req.params.param)));
+        res.json(buildings.filter(building => building.type.toLowerCase() === (req.query.type.toLowerCase())));
     } else {
-        res.status(400).json({ msg: `No building with the type ${req.params.param}` })
+        res.status(400).json({ msg: `No building with the type ${req.query.type}` })
     }
 }
 
