@@ -16,7 +16,7 @@ const createBoiler = (req, res) => {
         eventual_maintenance
     } = req.body;
 
-    if (!id || !category || !stock || !installed || !reserved || !client_list || !technicians_list) {
+    if (!id || !category || !stock || !installed || !reserved || !client_list || !technicians_list || !monthly_maintenance || !eventual_maintenance) {
         res.status(400).send("Incomplete fields");
         return;
     }
@@ -90,7 +90,7 @@ const updateBoiler = (req, res) => {
             eventual_maintenance
         };
 
-        if (!category || !stock || !installed) {
+        if (!category || !stock || !installed || !reserved || !client_list || !technicians_list || !monthly_maintenance || !eventual_maintenance) {
             res.status(400).send("Incomplete fields");
             return;
         }
