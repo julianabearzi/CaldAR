@@ -9,7 +9,7 @@ const createBuilding = async (req, res) => {
             data: newBuilding,
             error: false
         });
-        
+
     } catch (error) {
         return res.status(400).json({
             error: true,
@@ -27,7 +27,7 @@ const getAllBuildings = async (req, res) => {
             data: response,
             error: false
         });
-        
+
     } catch (error) {
         return res.status(400).json({
             error: true,
@@ -38,9 +38,9 @@ const getAllBuildings = async (req, res) => {
 
 const getBuildingById = async (req, res) => {
     try {
-        const response = await BuildingSchema.findOne({ _id: req.params.id});
+        const response = await BuildingSchema.findOne({ _id: req.params.id });
 
-        if(!response || response.length === 0) {
+        if (!response || response.length === 0) {
             return res.status(404).json({
                 error: true,
                 msg: `No building with the id of ${req.params.id}`
@@ -51,7 +51,7 @@ const getBuildingById = async (req, res) => {
             data: response,
             error: false
         });
-        
+
     } catch (error) {
         return res.status(400).json({
             error: true,
@@ -62,9 +62,9 @@ const getBuildingById = async (req, res) => {
 
 const getBuildingByName = async (req, res) => {
     try {
-        const response = await BuildingSchema.findOne({ name: req.query.name});
+        const response = await BuildingSchema.findOne({ name: req.query.name });
 
-        if(!response) {
+        if (!response) {
             return res.status(404).json({
                 error: true,
                 msg: `No building with the name ${req.query.name}`
@@ -75,7 +75,7 @@ const getBuildingByName = async (req, res) => {
             data: response,
             error: false
         });
-        
+
     } catch (error) {
         return res.status(400).json({
             error: true,
@@ -86,9 +86,9 @@ const getBuildingByName = async (req, res) => {
 
 const updateBuilding = async (req, res) => {
     try {
-        const buildingUpdated = await BuildingSchema.findOneAndUpdate({ _id: req.params.id}, req.body, { new: true });
+        const buildingUpdated = await BuildingSchema.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
 
-        if(!buildingUpdated || buildingUpdated.length === 0) {
+        if (!buildingUpdated || buildingUpdated.length === 0) {
             return res.status(404).json({
                 error: true,
                 msg: `No building with the id ${req.params.id}`
@@ -100,7 +100,7 @@ const updateBuilding = async (req, res) => {
             data: buildingUpdated,
             error: false
         });
-        
+
     } catch (error) {
         return res.status(400).json({
             error: true,
@@ -111,9 +111,9 @@ const updateBuilding = async (req, res) => {
 
 const deleteBuilding = async (req, res) => {
     try {
-        const buildingFound = await BuildingSchema.findOneAndRemove({ _id: req.params.id});
+        const buildingFound = await BuildingSchema.findOneAndRemove({ _id: req.params.id });
 
-        if(!buildingFound || buildingFound.length === 0) {
+        if (!buildingFound || buildingFound.length === 0) {
             return res.status(404).json({
                 error: true,
                 msg: `No building with the id ${req.params.id}`
@@ -125,7 +125,7 @@ const deleteBuilding = async (req, res) => {
             data: buildingFound,
             error: false
         });
-        
+
     } catch (error) {
         return res.status(400).json({
             error: true,
