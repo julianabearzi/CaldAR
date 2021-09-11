@@ -16,7 +16,7 @@ app.use(techniciansRoutes);
 app.use(ConstructionRoutes);
 app.use(maintenanceRoutes);
 
-mongoose.connect('mongodb+srv://user:test123@cluster0.taz6e.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://user:test123@cluster0.taz6e.mongodb.net/CaldAR?retryWrites=true&w=majority')
 .then((result) => {
   console.log(`Database connected`);
 })
