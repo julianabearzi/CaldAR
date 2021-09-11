@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const technicians = fs.readFileSync('data/technicians.json');
+const technicians = fs.readFileSync('src/data/technicians.json');
 let technician = JSON.parse(technicians);
 
 const createTechnician = (req, res) => {

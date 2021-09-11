@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const constructions = fs.readFileSync('data/construction-company.json');
+const constructions = fs.readFileSync('src/data/construction-company.json');
 
 let construction = JSON.parse(constructions);
 

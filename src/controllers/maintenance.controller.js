@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const maintenances = fs.readFileSync('data/maintenance.json');
+const maintenances = fs.readFileSync('src/data/maintenance.json');
 let maintenance = JSON.parse(maintenances);
 
 const createMaintenance = (req, res) => {
