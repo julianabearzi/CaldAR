@@ -1,97 +1,136 @@
-const fs = require('fs');
+const MaintenanceSchema = require('../model/Maintenance');
 
-const maintenances = fs.readFileSync('data/maintenance.json');
-let maintenance = JSON.parse(maintenances);
+const createMaintenance = async (req, res) => {
+    try {
+        const maintenance = new MaintenanceSchema(req.body);
+        const newMaintenance = await maintenance.save();
 
-const createMaintenance = (req, res) => {
+        return res.status(201).json({
+            data: newMaintenance,
+            error: false
+        });
 
-    const { id, boiler, date, technicians_list, building } = req.body;
-
-    if (!id || !boiler || !date || !technicians_list || !building) {
-        res.status(400).send("Incomplete fields");
-        return;
-    }
-
-    const newMaintenance = {
-        id,
-        boiler,
-        date,
-        technicians_list,
-        building
-    };
-
-    maintenance.push(newMaintenance);
-    fs.writeFileSync('data/maintenance.json', JSON.stringify(maintenance, null, 2));
-    res.json(newMaintenance);
-};
-
-
-const getAllMaintenance = (req, res) => {
-    res.json(maintenance);
-};
-
-const getMaintenanceById = (req, res) => {
-    const idFound = maintenance.some(m => m.id === parseInt(req.params.id));
-
-    if (idFound) {
-        res.json(maintenance.filter(m => m.id === parseInt(req.params.id)));
-    }
-    else {
-        res.status(400).json({ msg: `No maintenance with the id ${req.params.id}` });
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
 
-const getMaintenanceByBoiler = (req, res) => {
-    const idFound = maintenance.some(m => m.boiler.toLowerCase() === (req.query.boiler.toLowerCase()));
 
-    if (idFound) {
-        res.json(maintenance.filter(m => m.boiler.toLowerCase() === (req.query.boiler.toLowerCase())));
-    }
-    else {
-        res.status(400).json({ msg: `No maintenance with the boiler ${req.query.boiler}` });
+const getAllMaintenance = async (req, res) => {
+    try {
+        const response = await MaintenanceSchema.find();
+
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
 
-const updateMaintenance = (req, res) => {
+const getMaintenanceById = async (req, res) => {
+    try {
+        const response = await MaintenanceSchema.findOne({ _id: req.params.id });
 
-    const id = parseInt(req.params.id);
-    const { boiler = '', date = '', technicians_list = '', building = '' } = req.body;
-    const maintenanceItem = maintenance.find(maintenanceItem => maintenanceItem.id === parseInt(req.params.id));
-    if (maintenanceItem) {
-        const index = maintenance.indexOf(maintenanceItem);
-        const updatedMaintenance = {
-            id,
-            boiler,
-            date,
-            technicians_list,
-            building
-        };
-
-        if (!boiler || !date || !technicians_list || !building) {
-            res.status(400).send("Incomplete fields");
-            return;
+        if (!response || response.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No Maintenance with the id of ${req.params.id}`
+            });
         }
 
-        maintenance[index] = updatedMaintenance;
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
 
-        fs.writeFileSync('data/maintenance.json', JSON.stringify(maintenance, null, 2));
-        res.json({ msg: 'Maintenance updated', updatedMaintenance });
-    } else {
-        res.status(400).json({ msg: `No maintenance with the id of ${req.params.id}` });
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+}
+
+const getMaintenanceByBoiler = async (req, res) => {
+    try {
+        const response = await MaintenanceSchema.findOne({ boiler: req.query.boiler });
+
+        if (!response) {
+            return res.status(404).json({
+                error: true,
+                msg: `No Maintenance with the boiler ${req.query.boiler}`
+            });
+        }
+
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+}
+
+const updateMaintenance = async (req, res) => {
+    try {
+        const maintenanceUpdated = await MaintenanceSchema.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+
+        if (!maintenanceUpdated || maintenanceUpdated.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No Maintenance with the id ${req.params.id}`
+            });
+        }
+
+        return res.status(201).json({
+            msg: 'Maintenance updated',
+            data: maintenanceUpdated,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
 
-const deleteMaintenance = (req, res) => {
-    const idFound = maintenance.some(m => m.id === parseInt(req.params.id));
+const deleteMaintenance = async (req, res) => {
+    try {
+        const maintenanceFound = await MaintenanceSchema.findOneAndRemove({ _id: req.params.id });
 
-    if (idFound) {
-        maintenance = maintenance.filter(m => m.id !== parseInt(req.params.id));
+        if (!maintenanceFound || maintenanceFound.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No Maintenance with the id ${req.params.id}`
+            });
+        }
 
-        fs.writeFileSync('data/maintenance.json', JSON.stringify(maintenance, null, 2));
-        res.json({ msg: 'Maintenance deleted', maintenance });
+        return res.status(202).json({
+            msg: 'Maintenance deleted',
+            data: maintenanceFound,
+            error: false
+        });
 
-    } else {
-        res.status(400).json({ msg: `No maintenance with the id of ${req.params.id}` });
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
 
@@ -100,6 +139,6 @@ module.exports = {
     getAllMaintenance,
     getMaintenanceById,
     getMaintenanceByBoiler,
-    deleteMaintenance,
-    updateMaintenance
+    updateMaintenance,
+    deleteMaintenance
 };
