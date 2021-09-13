@@ -1,110 +1,143 @@
-const fs = require('fs');
+const ConstructionSchema = require('../model/Construction-company');
 
-const constructions = fs.readFileSync('src/data/construction-company.json');
+const createConstruction = async (req, res) => {
+    try {
+        const construction = new ConstructionSchema(req.body);
+        const newConstruction = await construction.save();
 
-let construction = JSON.parse(constructions);
+        return res.status(201).json({
+            data: newConstruction,
+            error: false
+        });
 
-const createConstruction = (req, res) => {
-    const {
-        id,
-        first_name
-        
-       
-    } = req.body;
-
-    if (!id || !first_name ) {
-        res.status(400).send("Incomplete fields");
-        return;
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
-
-    const newConstruction = {
-        id,
-        first_name,      
-    };
-
-
-    construction.push(newConstruction);
-    fs.writeFileSync('data/construction-company.json', JSON.stringify(construction, null, 2));
-    res.json(newConstruction);
-
 };
 
-const getAllConstructions = (req,res) =>{
-    res.json(construction);
-}
 
+const getAllConstructions = async (req, res) => {
+    try {
+        const response = await ConstructionSchema.find();
 
-const getConstructionsById = (req,res) =>{
-    const found = construction.some(c => c.id === parseInt(req.params.id));
-    if (found) {
-        res.json(constructions.filter(c => c.id === parseInt(req.params.id)));
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
-    else{
-        res.status(400).json({ msg: `No construction with the id of ${req.params.id}`});
-    }
-}
+};
 
+const getConstructionById = async (req, res) => {
+    try {
+        const response = await ConstructionSchema.findOne({ _id: req.params.id });
 
-const getConstructionsByFirstName= (req,res) =>{
-    const found = construction.some(c =>c.first_name.toLowerCase() === (req.query.first_name.toLowerCase()));
-    if (found) {
-        res.json(constructions.filter(c => c.first_name.toLowerCase() === (req.query.first_name.toLowerCase())));
-    }
-    else{
-        res.status(400).json({ msg: `No construction with the name ${req.query.first_name}`});
-    }
-}
-
-
-const updateConstruction = (req, res) => {
-    const id = parseInt(req.params.id);
-    const {
-        first_name = '',
-    } = req.body;
-
-    const constructionItem = construction.find(constructionItem => constructionItem.id === parseInt(req.params.id));
-    if (constructionItem) {
-        const index = construction.indexOf(constructionItem);
-        const updatedConstruction = {
-            id,
-            first_name
-             
-        };
-
-        if (!first_name) {
-            res.status(400).send("Incomplete fields");
-            return;
+        if (!response || response.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the id of ${req.params.id}`
+            });
         }
 
-        construction[index] = updatedConstruction;
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
 
-        fs.writeFileSync('data/construction-company.json', JSON.stringify(construction, null, 2));
-        res.json({ msg: 'Construction updated', updatedConstruction });
-    } else {
-        res.status(400).json({ msg: `No construction with the id of ${req.params.id}` });
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+}
+
+const getConstructionByFirstName = async (req, res) => {
+    try {
+        const response = await ConstructionSchema.findOne({ name: req.query.name });
+
+        if (!response) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the name ${req.query.name}`
+            });
+        }
+
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+}
+
+const updateConstruction = async (req, res) => {
+    try {
+        const constructionUpdated = await ConstructionSchema.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+
+        if (!constructionUpdated || constructionUpdated.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the id ${req.params.id}`
+            });
+        }
+
+        return res.status(201).json({
+            msg: 'Construction updated',
+            data: constructionUpdated,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
 
+const deleteConstruction = async (req, res) => {
+    try {
+        const constructionFound = await ConstructionSchema.findOneAndRemove({ _id: req.params.id });
 
+        if (!constructionFound || constructionFound.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the id ${req.params.id}`
+            });
+        }
 
+        return res.status(202).json({
+            msg: 'Construction deleted',
+            data: constructionFound,
+            error: false
+        });
 
-const deleteConstruction = (req,res) =>{
-    const found = construction.some(c => c.id === parseInt(req.params.id));
-    
-    if (found) {
-        construction = construction.filter(c => c.id !== parseInt(req.params.id));
-
-        fs.writeFileSync('data/construction-company.json', JSON.stringify(construction, null, 2));
-        res.json({ msg: 'Construction deleted', construction });
-    } else {
-        res.status(400).json({ msg: `No construction with the id of ${req.params.id}` });
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
-}
+};
 
 module.exports ={
     getAllConstructions,
-    getConstructionsById,
-    getConstructionsByFirstName,
+    getConstructionById,
+    getConstructionByFirstName,
     createConstruction,
     updateConstruction,
     deleteConstruction
