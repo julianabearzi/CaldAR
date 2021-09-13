@@ -1,6 +1,16 @@
-const BuildingSchema = require('../model/Buildings')
+const BuildingSchema = require('../model/Buildings');
+const ConstructionSchema = require('../model/Construction-company');
+
 
 const createBuilding = async (req, res) => {
+    const { type } = req.body;
+    const validationType = await ConstructionSchema.findById(type);
+    console.log(type, validationType)
+    if (!validationType) {
+        return res.status(400).json({
+            msg: `The building type was not found in the database.`
+        });
+    }
     try {
         const building = new BuildingSchema(req.body);
         const newBuilding = await building.save();
@@ -39,6 +49,7 @@ const getAllBuildings = async (req, res) => {
 const getBuildingById = async (req, res) => {
     try {
         const response = await BuildingSchema.findOne({ _id: req.params.id });
+        console.log(response)
 
         if (!response || response.length === 0) {
             return res.status(404).json({
@@ -85,6 +96,15 @@ const getBuildingByName = async (req, res) => {
 }
 
 const updateBuilding = async (req, res) => {
+    const { type } = req.body;
+    if (type) {
+        const validationType = await ConstructionSchema.findById(type);
+        if (!validationType) {
+            return res.status(400).json({
+                msg: `The building type was not found in the database.`
+            });
+        }
+    }
     try {
         const buildingUpdated = await BuildingSchema.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
 

@@ -1,45 +1,144 @@
-const constructions = require('../data/construction-company.json');
+const ConstructionSchema = require('../model/Construction-company');
 
-const getAllConstructions = (req,res) =>{
-    res.json(constructions);
+const createConstruction = async (req, res) => {
+    try {
+        const construction = new ConstructionSchema(req.body);
+        const newConstruction = await construction.save();
+
+        return res.status(201).json({
+            data: newConstruction,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+};
+
+
+const getAllConstructions = async (req, res) => {
+    try {
+        const response = await ConstructionSchema.find();
+
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+};
+
+const getConstructionById = async (req, res) => {
+    try {
+        const response = await ConstructionSchema.findOne({ _id: req.params.id });
+
+        if (!response || response.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the id of ${req.params.id}`
+            });
+        }
+
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
 }
 
-const getConstructionsById = (req,res) =>{
-    const found = constructions.some(construction => construction.id === parseInt(req.params.param));
-    if (found) {
-        res.json(constructions.filter(construction => construction.id === parseInt(req.params.param)));
-    }
-    else{
-        res.status(404).json({ msg: `No construction with the id of ${req.params.param}`});
-    }
-}
+const getConstructionByFirstName = async (req, res) => {
+    try {
+        const response = await ConstructionSchema.findOne({ name: req.query.name });
 
+        if (!response) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the name ${req.query.name}`
+            });
+        }
 
-const getConstructionsByFirstName= (req,res) =>{
-    const found = constructions.some(construction =>construction.first_name === req.params.param);
-    if (found) {
-        res.json(constructions.filter(construction => construction.first_name === req.params.param));
-    }
-    else{
-        res.status(404).json({ msg: `No construction with the name ${req.params.param}`});
-    }
-}
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
 
-
-const deleteConstruction = (req,res) =>{
-    const found = constructions.some(construction => construction.id === parseInt(req.params.id));
-    if (found) {
-        res.json({ msg: 'construction deleted', constructions: constructions.filter(construction => construction.id !== parseInt(req.params.id))});
-    }
-
-    else{
-        res.status(400).json({ msg: `No construction with the id of ${req.params.id}`});
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 }
 
-module.exports ={
+const updateConstruction = async (req, res) => {
+    try {
+        const constructionUpdated = await ConstructionSchema.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+
+        if (!constructionUpdated || constructionUpdated.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the id ${req.params.id}`
+            });
+        }
+
+        return res.status(201).json({
+            msg: 'Construction updated',
+            data: constructionUpdated,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+};
+
+const deleteConstruction = async (req, res) => {
+    try {
+        const constructionFound = await ConstructionSchema.findOneAndRemove({ _id: req.params.id });
+
+        if (!constructionFound || constructionFound.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No construction company with the id ${req.params.id}`
+            });
+        }
+
+        return res.status(202).json({
+            msg: 'Construction deleted',
+            data: constructionFound,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+};
+
+module.exports = {
     getAllConstructions,
-    getConstructionsById,
-    getConstructionsByFirstName,
+    getConstructionById,
+    getConstructionByFirstName,
+    createConstruction,
+    updateConstruction,
     deleteConstruction
 }

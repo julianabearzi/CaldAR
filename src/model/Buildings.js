@@ -13,7 +13,7 @@ const buildingSchema = new mongoose.Schema({
     },
     type: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Construction-companies',
+        ref: 'Construction-company',
     },
     phone: {
         type: String,
