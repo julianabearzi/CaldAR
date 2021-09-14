@@ -1,11 +1,9 @@
 const BuildingSchema = require('../model/Buildings');
 const ConstructionSchema = require('../model/Construction-company');
 
-
 const createBuilding = async (req, res) => {
     const { type } = req.body;
     const validationType = await ConstructionSchema.findById(type);
-    console.log(type, validationType)
     if (!validationType) {
         return res.status(400).json({
             msg: `The building type was not found in the database.`
@@ -49,7 +47,6 @@ const getAllBuildings = async (req, res) => {
 const getBuildingById = async (req, res) => {
     try {
         const response = await BuildingSchema.findOne({ _id: req.params.id });
-        console.log(response)
 
         if (!response || response.length === 0) {
             return res.status(404).json({
