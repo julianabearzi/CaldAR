@@ -134,7 +134,7 @@ const deleteConstruction = async (req, res) => {
     }
 };
 
-module.exports ={
+module.exports = {
     getAllConstructions,
     getConstructionById,
     getConstructionByFirstName,

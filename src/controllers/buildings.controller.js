@@ -1,99 +1,161 @@
-const fs = require('fs');
+const BuildingSchema = require('../model/Buildings');
+const ConstructionSchema = require('../model/Construction-company');
 
-const buildings = fs.readFileSync('src/data/buildings.json');
-let building = JSON.parse(buildings);
-
-const createBuilding = (req, res) => {
-    const { id, type, state, address } = req.body;
-
-    if (!id || !type || !state || !address) {
-        res.status(400).send("Incomplete fields");
-        return;
+const createBuilding = async (req, res) => {
+    const { type } = req.body;
+    const validationType = await ConstructionSchema.findById(type);
+    if (!validationType) {
+        return res.status(400).json({
+            msg: `The building type was not found in the database.`
+        });
     }
+    try {
+        const building = new BuildingSchema(req.body);
+        const newBuilding = await building.save();
 
-    const newBuilding = {
-        id,
-        type,
-        state,
-        address
-    };
+        return res.status(201).json({
+            data: newBuilding,
+            error: false
+        });
 
-    building.push(newBuilding);
-    fs.writeFileSync('data/buildings.json', JSON.stringify(building, null, 2));
-    res.json(newBuilding);
-};
-
-
-const getAllBuildings = (req, res) => {
-    res.json(building);
-};
-
-const getBuildingById = (req, res) => {
-    const idFound = building.some(b => b.id === parseInt(req.params.id));
-
-    if (idFound) {
-        res.json(building.filter(b => b.id === parseInt(req.params.id)));
-    } else {
-        res.status(400).json({ msg: `No building with the id of ${req.params.id}` });
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
 
-const getBuildingByType = (req, res) => {
-    const typeFound = building.some(b => b.type.toLowerCase() === (req.query.type.toLowerCase()));
 
-    if (typeFound) {
-        res.json(building.filter(b => b.type.toLowerCase() === (req.query.type.toLowerCase())));
-    } else {
-        res.status(400).json({ msg: `No building with the type ${req.query.type}` })
+const getAllBuildings = async (req, res) => {
+    try {
+        const response = await BuildingSchema.find();
+
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+};
+
+const getBuildingById = async (req, res) => {
+    try {
+        const response = await BuildingSchema.findOne({ _id: req.params.id });
+
+        if (!response || response.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No building with the id of ${req.params.id}`
+            });
+        }
+
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 }
 
-const updateBuilding = (req, res) => {
-    const id = parseInt(req.params.id);
-    const { type = '', state = '', address = '' } = req.body;
-    const buildingItem = building.find(buildingItem => buildingItem.id === parseInt(req.params.id));
-    if (buildingItem) {
-        const index = building.indexOf(buildingItem);
-        const updatedBuilding = {
-            id,
-            type,
-            state,
-            address
-        };
+const getBuildingByName = async (req, res) => {
+    try {
+        const response = await BuildingSchema.findOne({ name: req.query.name });
 
-        if (!type || !state || !address) {
-            res.status(400).send("Incomplete fields");
-            return;
+        if (!response) {
+            return res.status(404).json({
+                error: true,
+                msg: `No building with the name ${req.query.name}`
+            });
         }
 
-        building[index] = updatedBuilding;
+        return res.status(200).json({
+            data: response,
+            error: false
+        });
 
-        fs.writeFileSync('data/buildings.json', JSON.stringify(building, null, 2));
-        res.json({ msg: 'Building updated', updatedBuilding });
-    } else {
-        res.status(400).json({ msg: `No building with the id of ${req.params.id}` });
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
+    }
+}
+
+const updateBuilding = async (req, res) => {
+    const { type } = req.body;
+    if (type) {
+        const validationType = await ConstructionSchema.findById(type);
+        if (!validationType) {
+            return res.status(400).json({
+                msg: `The building type was not found in the database.`
+            });
+        }
+    }
+    try {
+        const buildingUpdated = await BuildingSchema.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+
+        if (!buildingUpdated || buildingUpdated.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No building with the id ${req.params.id}`
+            });
+        }
+
+        return res.status(201).json({
+            msg: 'Building updated',
+            data: buildingUpdated,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
 
-const deleteBuilding = (req, res) => {
-    const idFound = building.some(b => b.id === parseInt(req.params.id));
+const deleteBuilding = async (req, res) => {
+    try {
+        const buildingFound = await BuildingSchema.findOneAndRemove({ _id: req.params.id });
 
-    if (idFound) {
-        building = building.filter(b => b.id !== parseInt(req.params.id));
+        if (!buildingFound || buildingFound.length === 0) {
+            return res.status(404).json({
+                error: true,
+                msg: `No building with the id ${req.params.id}`
+            });
+        }
 
-        fs.writeFileSync('data/buildings.json', JSON.stringify(building, null, 2));
-        res.json({ msg: 'Building deleted', building });
-    } else {
-        res.status(400).json({ msg: `No building with the id of ${req.params.id}` })
+        return res.status(202).json({
+            msg: 'Building deleted',
+            data: buildingFound,
+            error: false
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: true,
+            msg: error
+        });
     }
 };
-
 
 module.exports = {
     createBuilding,
     getAllBuildings,
     getBuildingById,
-    getBuildingByType,
+    getBuildingByName,
     updateBuilding,
     deleteBuilding
 };

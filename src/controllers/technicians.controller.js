@@ -11,10 +11,10 @@ const createTechnician = (req, res) => {
         phone_number,
         dni,
         boiler_specialty
-       
+
     } = req.body;
 
-    if (!id || !first_name || !last_name || !phone_number || !dni || !boiler_specialty ) {
+    if (!id || !first_name || !last_name || !phone_number || !dni || !boiler_specialty) {
         res.status(400).send("Incomplete fields");
         return;
     }
@@ -25,7 +25,7 @@ const createTechnician = (req, res) => {
         last_name,
         phone_number,
         dni,
-        boiler_specialty      
+        boiler_specialty
     };
 
     technician.push(newTechnician);
@@ -38,12 +38,12 @@ const getAllTechnicians = (req, res) => {
 };
 
 const getTechnicianById = (req, res) => {
-    const found = technician.some(t=> t.id === parseInt(req.params.id));
+    const found = technician.some(t => t.id === parseInt(req.params.id));
 
-    if(found) {
+    if (found) {
         res.json(technician.filter(t => t.id === parseInt(req.params.id)));
     } else {
-        res.status(400).json({ msg: `No technician with the id of ${req.params.id}`});
+        res.status(400).json({ msg: `No technician with the id of ${req.params.id}` });
     }
 };
 
@@ -51,10 +51,10 @@ const getTechnicianById = (req, res) => {
 const getTechnicianByFirstName = (req, res) => {
     const found = technician.some(t => t.first_name.toLowerCase() === (req.query.first_name.toLowerCase()));
 
-    if(found) {
+    if (found) {
         res.json(technician.filter(t => t.first_name.toLowerCase() === (req.query.first_name.toLowerCase())));
     } else {
-        res.status(400).json({ msg: `No technician with the name ${req.query.first_name}`});
+        res.status(400).json({ msg: `No technician with the name ${req.query.first_name}` });
     }
 };
 
@@ -77,7 +77,7 @@ const updateTechnician = (req, res) => {
             last_name,
             phone_number,
             dni,
-            boiler_specialty 
+            boiler_specialty
         };
 
         if (!first_name || !last_name || !phone_number || !dni || !boiler_specialty) {
@@ -109,10 +109,10 @@ const deleteTechnician = (req, res) => {
 
 
 module.exports = {
-   getAllTechnicians,
-   getTechnicianById,
-   getTechnicianByFirstName,
-   createTechnician,
-   updateTechnician,
-   deleteTechnician
+    getAllTechnicians,
+    getTechnicianById,
+    getTechnicianByFirstName,
+    createTechnician,
+    updateTechnician,
+    deleteTechnician
 };
