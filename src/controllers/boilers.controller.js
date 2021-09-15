@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const boilers = fs.readFileSync('data/boilers.json');
+const boilers = fs.readFileSync('src/data/boilers.json');
 let boiler = JSON.parse(boilers);
 
 const createBoiler = (req, res) => {
