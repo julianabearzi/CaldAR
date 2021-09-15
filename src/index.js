@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const boilersCategories = require('./routes/boilers-categories.routes');
 const boilersRoutes = require('./routes/boilers.routes');
 const buildingsRoutes = require('./routes/buildings.routes');
 const techniciansRoutes = require('./routes/technicians.routes');
@@ -10,6 +11,7 @@ const PORT = 3000;
 
 app.use(express.json());
 
+app.use(boilersCategories);
 app.use(boilersRoutes);
 app.use(buildingsRoutes);
 app.use(techniciansRoutes);
