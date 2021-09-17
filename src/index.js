@@ -1,13 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const boilersCategories = require('./routes/boilers-categories.routes');
 const boilersRoutes = require('./routes/boilers.routes');
 const buildingsRoutes = require('./routes/buildings.routes');
 const techniciansRoutes = require('./routes/technicians.routes');
 const ConstructionRoutes = require('./routes/construction-company.routes');
 const maintenanceRoutes = require('./routes/maintenance.routes');
-require('dotenv').config();
 
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
