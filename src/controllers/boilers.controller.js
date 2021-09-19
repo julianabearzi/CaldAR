@@ -1,24 +1,8 @@
-const models = require('../model');
+const BoilerSchema = require('../model/Boilers');
 
 const createBoiler = async (req, res) => {
   try {
-    const categoryId = await models.BoilersCategories.findById(
-      req.body.categoryId
-    );
-    if (!categoryId) {
-      return res.status(400).json({
-        msg: 'Boiler category not found',
-      });
-    }
-    if (req.body.building) {
-      const building = await models.Buildings.findById(req.body.building);
-      if (!building) {
-        return res.status(400).json({
-          msg: 'Building not found',
-        });
-      }
-    }
-    const boiler = new models.Boilers(req.body);
+    const boiler = new BoilerSchema(req.body);
     const newBoiler = await boiler.save();
 
     return res.status(201).json({
@@ -35,7 +19,7 @@ const createBoiler = async (req, res) => {
 
 const getAllBoilers = async (req, res) => {
   try {
-    const response = await models.Boilers.find();
+    const response = await BoilerSchema.find();
 
     return res.status(200).json({
       data: response,
@@ -51,7 +35,7 @@ const getAllBoilers = async (req, res) => {
 
 const getBoilerById = async (req, res) => {
   try {
-    const response = await models.Boilers.findOne({ _id: req.params.id });
+    const response = await BoilerSchema.findOne({ _id: req.params.id });
 
     if (!response || response.length === 0) {
       return res.status(404).json({
@@ -74,7 +58,7 @@ const getBoilerById = async (req, res) => {
 
 const getBoilerBySituation = async (req, res) => {
   try {
-    const response = await models.Boilers.find({
+    const response = await BoilerSchema.find({
       boilerSituation: req.query.boilerSituation,
     });
 
@@ -98,25 +82,7 @@ const getBoilerBySituation = async (req, res) => {
 
 const updateBoiler = async (req, res) => {
   try {
-    if (req.body.categoryId) {
-      const categoryId = await models.BoilersCategories.findById(
-        req.body.categoryId
-      );
-      if (!categoryId) {
-        return res.status(400).json({
-          msg: 'Boiler category not found',
-        });
-      }
-    }
-    if (req.body.building) {
-      const building = await models.Buildings.findById(req.body.building);
-      if (!building) {
-        return res.status(400).json({
-          msg: 'Building not found',
-        });
-      }
-    }
-    const BoilerUpdated = await models.Boilers.findOneAndUpdate(
+    const BoilerUpdated = await BoilerSchema.findOneAndUpdate(
       { _id: req.params.id },
       req.body,
       { new: true }
@@ -144,7 +110,7 @@ const updateBoiler = async (req, res) => {
 
 const deleteBoiler = async (req, res) => {
   try {
-    const BoilerFound = await models.Boilers.findOneAndRemove({
+    const BoilerFound = await BoilerSchema.findOneAndRemove({
       _id: req.params.id,
     });
 

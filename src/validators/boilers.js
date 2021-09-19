@@ -31,6 +31,7 @@ const ValidateCreate = [
     .exists()
     .not()
     .isEmpty(),
+  check('building', 'Please enter a building valid').isMongoId().optional(),
 
   (req, res, next) => {
     validateFields(req, res, next);
