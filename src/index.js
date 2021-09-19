@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const boilersCategories = require('./routes/boilers-categories.routes');
 const boilersRoutes = require('./routes/boilers.routes');
-const maintenanceRoutes = require('./routes/maintenance.routes');
 
 dotenv.config();
 const app = express();
@@ -13,7 +12,6 @@ app.use(express.json());
 
 app.use(boilersCategories);
 app.use(boilersRoutes);
-app.use(maintenanceRoutes);
 
 mongoose
   .connect(process.env.CONNECTION_URL)

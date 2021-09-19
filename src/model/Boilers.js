@@ -4,7 +4,7 @@ const boilerSchema = mongoose.Schema(
   {
     description: {
       type: String,
-      required: true
+      required: true,
     },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,13 +14,14 @@ const boilerSchema = mongoose.Schema(
     boilerSituation: {
       type: String,
       enum: ['installed', 'reserved', 'available'],
-      required: true
+      required: true,
     },
     building: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'buildings'
-    }
-  }, { timestamp: true }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'buildings',
+    },
+  },
+  { timestamp: true }
 );
 
 module.exports = mongoose.model('Boilers', boilerSchema);
