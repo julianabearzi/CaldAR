@@ -17,5 +17,6 @@ module.exports = {
     'no-shadow': 'off',
     'comma-dangle': 'off',
     camelcase: 'off',
+    'consistent-return': 'off',
   },
 };
