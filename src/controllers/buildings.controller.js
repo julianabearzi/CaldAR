@@ -87,6 +87,12 @@ const getBuildingByName = async (req, res) => {
 
 const updateBuilding = async (req, res) => {
   try {
+    const type = await models.Constructions.findById(req.body.type);
+    if (!type) {
+      return res.status(400).json({
+        msg: 'The type assigned to building was not found',
+      });
+    }
     const buildingUpdated = await models.Buildings.findOneAndUpdate(
       { _id: req.params.id },
       req.body,
