@@ -1,8 +1,8 @@
-const ConstructionSchema = require('../model/Construction-company');
+const models = require('../model');
 
 const createConstruction = async (req, res) => {
   try {
-    const construction = new ConstructionSchema(req.body);
+    const construction = new models.Constructions(req.body);
     const newConstruction = await construction.save();
 
     return res.status(201).json({
@@ -19,7 +19,7 @@ const createConstruction = async (req, res) => {
 
 const getAllConstructions = async (req, res) => {
   try {
-    const response = await ConstructionSchema.find();
+    const response = await models.Constructions.find();
 
     return res.status(200).json({
       data: response,
@@ -35,7 +35,7 @@ const getAllConstructions = async (req, res) => {
 
 const getConstructionById = async (req, res) => {
   try {
-    const response = await ConstructionSchema.findOne({ _id: req.params.id });
+    const response = await models.Constructions.findOne({ _id: req.params.id });
 
     if (!response || response.length === 0) {
       return res.status(404).json({
@@ -58,7 +58,9 @@ const getConstructionById = async (req, res) => {
 
 const getConstructionByFirstName = async (req, res) => {
   try {
-    const response = await ConstructionSchema.findOne({ name: req.query.name });
+    const response = await models.Constructions.findOne({
+      name: req.query.name,
+    });
 
     if (!response) {
       return res.status(404).json({
@@ -81,7 +83,7 @@ const getConstructionByFirstName = async (req, res) => {
 
 const updateConstruction = async (req, res) => {
   try {
-    const constructionUpdated = await ConstructionSchema.findOneAndUpdate(
+    const constructionUpdated = await models.Constructions.findOneAndUpdate(
       { _id: req.params.id },
       req.body,
       { new: true }
@@ -109,7 +111,15 @@ const updateConstruction = async (req, res) => {
 
 const deleteConstruction = async (req, res) => {
   try {
-    const constructionFound = await ConstructionSchema.findOneAndRemove({
+    const buildingFound = await models.Buildings.findOne({
+      type: req.params.id,
+    });
+    if (buildingFound) {
+      return res.status(400).json({
+        msg: 'This construction company has registered buildings. It cannot be removed.',
+      });
+    }
+    const constructionFound = await models.Constructions.findOneAndRemove({
       _id: req.params.id,
     });
 
