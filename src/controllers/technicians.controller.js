@@ -1,8 +1,18 @@
-const TechnicianSchema = require('../model/Technicians');
+const models = require('../model');
 
 const createTechnician = async (req, res) => {
   try {
-    const technician = new TechnicianSchema(req.body);
+    for (let i = 0; i < req.body.boiler_specialty.length; i++) {
+      const boilerSpecialty = await models.BoilersCategories.findById(
+        req.body.boiler_specialty[i]
+      );
+      if (!boilerSpecialty) {
+        return res.status(400).json({
+          msg: 'the boiler specialty was not found',
+        });
+      }
+    }
+    const technician = new models.Technicians(req.body);
     const newTechnician = await technician.save();
 
     return res.status(201).json({
@@ -19,7 +29,7 @@ const createTechnician = async (req, res) => {
 
 const getAllTechnicians = async (req, res) => {
   try {
-    const response = await TechnicianSchema.find();
+    const response = await models.Technicians.find();
 
     return res.status(200).json({
       data: response,
@@ -35,7 +45,7 @@ const getAllTechnicians = async (req, res) => {
 
 const getTechnicianById = async (req, res) => {
   try {
-    const response = await TechnicianSchema.findOne({ _id: req.params.id });
+    const response = await models.Technicians.findOne({ _id: req.params.id });
 
     if (!response || response.length === 0) {
       return res.status(404).json({
@@ -58,7 +68,7 @@ const getTechnicianById = async (req, res) => {
 
 const getTechnicianByFirstName = async (req, res) => {
   try {
-    const response = await TechnicianSchema.findOne({ name: req.query.name });
+    const response = await models.Technicians.findOne({ name: req.query.name });
 
     if (!response) {
       return res.status(404).json({
@@ -81,7 +91,7 @@ const getTechnicianByFirstName = async (req, res) => {
 
 const updateTechnician = async (req, res) => {
   try {
-    const technicianUpdated = await TechnicianSchema.findOneAndUpdate(
+    const technicianUpdated = await models.Technicians.findOneAndUpdate(
       { _id: req.params.id },
       req.body,
       { new: true }
@@ -109,7 +119,7 @@ const updateTechnician = async (req, res) => {
 
 const deleteTechnician = async (req, res) => {
   try {
-    const technicianFound = await TechnicianSchema.findOneAndRemove({
+    const technicianFound = await models.Technicians.findOneAndRemove({
       _id: req.params.id,
     });
 
