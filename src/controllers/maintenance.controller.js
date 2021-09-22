@@ -80,7 +80,7 @@ const getMaintenanceById = async (req, res) => {
 
 const getMaintenanceByBoiler = async (req, res) => {
   try {
-    const response = await models.Maintenance.find({
+    const response = await models.Maintenance.findOne({
       boiler: req.query.boiler,
     });
 

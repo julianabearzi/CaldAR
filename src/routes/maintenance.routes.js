@@ -1,7 +1,9 @@
 const express = require('express');
+const { check } = require('express-validator');
 
 const router = express.Router();
 const maintenanceController = require('../controllers/maintenance.controller');
+const { validateFields } = require('../middlewares/validate');
 const {
   ValidateCreate,
   ValidateMaintenanceId,
@@ -10,7 +12,7 @@ const {
 router.get('/maintenance', maintenanceController.getAllMaintenance);
 router.get(
   '/maintenance/search',
-  ValidateMaintenanceId,
+  [check('boiler').isMongoId(), validateFields],
   maintenanceController.getMaintenanceByBoiler
 );
 router.get(
