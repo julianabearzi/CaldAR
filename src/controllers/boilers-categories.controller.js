@@ -1,8 +1,8 @@
-const BoilerCategorySchema = require('../model/Boilers-categories');
+const models = require('../model');
 
 const createBoilerCategory = async (req, res) => {
   try {
-    const boilerCategory = new BoilerCategorySchema(req.body);
+    const boilerCategory = new models.BoilersCategories(req.body);
     const newBoilerCategory = await boilerCategory.save();
 
     return res.status(201).json({
@@ -19,7 +19,7 @@ const createBoilerCategory = async (req, res) => {
 
 const getAllBoilerCategories = async (req, res) => {
   try {
-    const response = await BoilerCategorySchema.find();
+    const response = await models.BoilersCategories.find();
 
     return res.status(200).json({
       data: response,
@@ -35,7 +35,9 @@ const getAllBoilerCategories = async (req, res) => {
 
 const getBoilerCategoryById = async (req, res) => {
   try {
-    const response = await BoilerCategorySchema.findOne({ _id: req.params.id });
+    const response = await models.BoilersCategories.findOne({
+      _id: req.params.id,
+    });
 
     if (!response || response.length === 0) {
       return res.status(404).json({
@@ -58,7 +60,7 @@ const getBoilerCategoryById = async (req, res) => {
 
 const getBoilerCategoryByDescription = async (req, res) => {
   try {
-    const response = await BoilerCategorySchema.findOne({
+    const response = await models.BoilersCategories.findOne({
       description: req.query.description,
     });
 
@@ -83,11 +85,12 @@ const getBoilerCategoryByDescription = async (req, res) => {
 
 const updateBoilerCategory = async (req, res) => {
   try {
-    const BoilerCategoryUpdated = await BoilerCategorySchema.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      { new: true }
-    );
+    const BoilerCategoryUpdated =
+      await models.BoilersCategories.findOneAndUpdate(
+        { _id: req.params.id },
+        req.body,
+        { new: true }
+      );
 
     if (!BoilerCategoryUpdated || BoilerCategoryUpdated.length === 0) {
       return res.status(404).json({
@@ -111,9 +114,27 @@ const updateBoilerCategory = async (req, res) => {
 
 const deleteBoilerCategory = async (req, res) => {
   try {
-    const BoilerCategoryFound = await BoilerCategorySchema.findOneAndRemove({
-      _id: req.params.id,
+    const boilerFound = await models.Boilers.findOne({
+      categoryId: req.params.id,
     });
+    if (boilerFound) {
+      return res.status(400).json({
+        msg: 'This category of boilers has boilers. It cannot be removed.',
+      });
+    }
+    const technicianFound = await models.Technicians.findOne({
+      boiler_specialty: req.params.id,
+    });
+    if (technicianFound) {
+      return res.status(400).json({
+        msg: 'This boiler category has technicians assigned to it. It cannot be removed.',
+      });
+    }
+    const BoilerCategoryFound = await models.BoilersCategories.findOneAndRemove(
+      {
+        _id: req.params.id,
+      }
+    );
 
     if (!BoilerCategoryFound || BoilerCategoryFound.length === 0) {
       return res.status(404).json({
