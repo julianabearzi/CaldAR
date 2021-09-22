@@ -121,6 +121,14 @@ const updateBuilding = async (req, res) => {
 
 const deleteBuilding = async (req, res) => {
   try {
+    const maintenanceFound = await models.Maintenance.findOne({
+      building: req.params.id,
+    });
+    if (maintenanceFound) {
+      return res.status(400).json({
+        msg: 'This building has pending maintenance',
+      });
+    }
     const buildingFound = await models.Buildings.findOneAndRemove({
       _id: req.params.id,
     });
