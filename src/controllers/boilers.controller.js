@@ -1,146 +1,176 @@
-const fs = require('fs');
+const models = require('../model');
 
-const boilers = fs.readFileSync('src/data/boilers.json');
-let boiler = JSON.parse(boilers);
-
-const createBoiler = (req, res) => {
-  const {
-    id,
-    category,
-    stock,
-    installed,
-    reserved,
-    client_list,
-    technicians_list,
-    monthly_maintenance,
-    eventual_maintenance,
-  } = req.body;
-
-  if (
-    !id ||
-    !category ||
-    !stock ||
-    !installed ||
-    !reserved ||
-    !client_list ||
-    !technicians_list ||
-    !monthly_maintenance ||
-    !eventual_maintenance
-  ) {
-    res.status(400).send('Incomplete fields');
-    return;
-  }
-
-  const newBoiler = {
-    id,
-    category,
-    stock,
-    installed,
-    reserved,
-    client_list,
-    technicians_list,
-    monthly_maintenance,
-    eventual_maintenance,
-  };
-
-  boiler.push(newBoiler);
-  fs.writeFileSync('data/boilers.json', JSON.stringify(boiler, null, 2));
-  res.json(newBoiler);
-};
-
-const getAllBoilers = (req, res) => {
-  res.json(boiler);
-};
-
-const getBoilerById = (req, res) => {
-  const idFound = boiler.some((b) => b.id === parseInt(req.params.id));
-
-  if (idFound) {
-    res.json(boiler.filter((b) => b.id === parseInt(req.params.id)));
-  } else {
-    res.status(400).json({ msg: `No boiler with the id of ${req.params.id}` });
-  }
-};
-
-const getBoilerByCategory = (req, res) => {
-  const catFound = boiler.some(
-    (b) => b.category.toLowerCase() === req.query.category.toLowerCase()
-  );
-
-  if (catFound) {
-    res.json(
-      boiler.filter(
-        (b) => b.category.toLowerCase() === req.query.category.toLowerCase()
-      )
+const createBoiler = async (req, res) => {
+  try {
+    const categoryId = await models.BoilersCategories.findById(
+      req.body.categoryId
     );
-  } else {
-    res.status(400).json({ msg: `No boiler category ${req.query.category}` });
+    if (!categoryId) {
+      return res.status(400).json({
+        msg: 'The category assigned to the boiler was not found',
+      });
+    }
+    if (req.body.building) {
+      const building = await models.Buildings.findById(req.body.building);
+      if (!building) {
+        return res.status(400).json({
+          msg: 'The building assigned to the boiler was not found',
+        });
+      }
+    }
+    const boiler = new models.Boilers(req.body);
+    const newBoiler = await boiler.save();
+
+    return res.status(201).json({
+      data: newBoiler,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
   }
 };
 
-const updateBoiler = (req, res) => {
-  const id = parseInt(req.params.id);
-  const {
-    category = '',
-    stock = '',
-    installed = '',
-    reserved = '',
-    client_list = '',
-    technicians_list = '',
-    monthly_maintenance = '',
-    eventual_maintenance = '',
-  } = req.body;
+const getAllBoilers = async (req, res) => {
+  try {
+    const response = await models.Boilers.find();
 
-  const boilerItem = boiler.find(
-    (boilerItem) => boilerItem.id === parseInt(req.params.id)
-  );
-  if (boilerItem) {
-    const index = boiler.indexOf(boilerItem);
-    const updatedBoiler = {
-      id,
-      category,
-      stock,
-      installed,
-      reserved,
-      client_list,
-      technicians_list,
-      monthly_maintenance,
-      eventual_maintenance,
-    };
+    return res.status(200).json({
+      data: response,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
+  }
+};
 
-    if (
-      !category ||
-      !stock ||
-      !installed ||
-      !reserved ||
-      !client_list ||
-      !technicians_list ||
-      !monthly_maintenance ||
-      !eventual_maintenance
-    ) {
-      res.status(400).send('Incomplete fields');
-      return;
+const getBoilerById = async (req, res) => {
+  try {
+    const response = await models.Boilers.findOne({ _id: req.params.id });
+
+    if (!response || response.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No Boiler with the id of ${req.params.id}`,
+      });
     }
 
-    boiler[index] = updatedBoiler;
-
-    fs.writeFileSync('data/boilers.json', JSON.stringify(boiler, null, 2));
-    res.json({ msg: 'Boiler updated', updatedBoiler });
-  } else {
-    res.status(400).json({ msg: `No boiler with the id of ${req.params.id}` });
+    return res.status(200).json({
+      data: response,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
   }
 };
 
-const deleteBoiler = (req, res) => {
-  const idFound = boiler.some((b) => b.id === parseInt(req.params.id));
+const getBoilerBySituation = async (req, res) => {
+  try {
+    const response = await models.Boilers.find({
+      boilerSituation: req.query.boilerSituation,
+    });
 
-  if (idFound) {
-    boiler = boiler.filter((b) => b.id !== parseInt(req.params.id));
+    if (!response || response.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No boiler ${req.query.boilerSituation}`,
+      });
+    }
+    return res.status(200).json({
+      data: response,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
+  }
+};
 
-    fs.writeFileSync('data/boilers.json', JSON.stringify(boiler, null, 2));
-    res.json({ msg: 'Boiler deleted', boiler });
-  } else {
-    res.status(400).json({ msg: `No boiler with the id of ${req.params.id}` });
+const updateBoiler = async (req, res) => {
+  try {
+    const categoryId = await models.BoilersCategories.findById(
+      req.body.categoryId
+    );
+    if (!categoryId) {
+      return res.status(400).json({
+        msg: 'The category assigned to the boiler was not found',
+      });
+    }
+    if (req.body.building) {
+      const building = await models.Buildings.findById(req.body.building);
+      if (!building) {
+        return res.status(400).json({
+          msg: 'The building assigned to the boiler was not found',
+        });
+      }
+    }
+    const BoilerUpdated = await models.Boilers.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    );
+
+    if (!BoilerUpdated || BoilerUpdated.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No boiler with the id ${req.params.id}`,
+      });
+    }
+
+    return res.status(201).json({
+      msg: 'Boiler updated',
+      data: BoilerUpdated,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
+  }
+};
+
+const deleteBoiler = async (req, res) => {
+  try {
+    const maintenanceFound = await models.Maintenance.findOne({
+      boiler: req.params.id,
+    });
+    if (maintenanceFound) {
+      return res.status(400).json({
+        msg: 'This boiler has pending maintenance',
+      });
+    }
+    const BoilerFound = await models.Boilers.findOneAndRemove({
+      _id: req.params.id,
+    });
+
+    if (!BoilerFound || BoilerFound.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No boiler with the id ${req.params.id}`,
+      });
+    }
+
+    return res.status(202).json({
+      msg: 'Boiler deleted',
+      data: BoilerFound,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
   }
 };
 
@@ -148,7 +178,7 @@ module.exports = {
   createBoiler,
   getAllBoilers,
   getBoilerById,
-  getBoilerByCategory,
+  getBoilerBySituation,
   deleteBoiler,
   updateBoiler,
 };
