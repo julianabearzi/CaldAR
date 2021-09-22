@@ -14,6 +14,7 @@ const buildingSchema = new mongoose.Schema(
     type: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Construction-company',
+      required: true,
     },
     phone: {
       type: String,
