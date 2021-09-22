@@ -30,6 +30,9 @@ mongoose
     console.log(`Database no connected, error: ${error}`);
   });
 
+app.get('/', (req, res) => {
+  res.send('hi');
+});
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
