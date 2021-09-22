@@ -119,6 +119,14 @@ const updateTechnician = async (req, res) => {
 
 const deleteTechnician = async (req, res) => {
   try {
+    const maintenanceFound = await models.Maintenance.findOne({
+      technician: req.params.id,
+    });
+    if (maintenanceFound) {
+      return res.status(400).json({
+        msg: 'This technician has pending maintenance',
+      });
+    }
     const technicianFound = await models.Technicians.findOneAndRemove({
       _id: req.params.id,
     });
