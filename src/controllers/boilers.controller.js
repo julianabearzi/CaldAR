@@ -142,6 +142,14 @@ const updateBoiler = async (req, res) => {
 
 const deleteBoiler = async (req, res) => {
   try {
+    const maintenanceFound = await models.Maintenance.findOne({
+      boiler: req.params.id,
+    });
+    if (maintenanceFound) {
+      return res.status(400).json({
+        msg: 'This boiler has pending maintenance',
+      });
+    }
     const BoilerFound = await models.Boilers.findOneAndRemove({
       _id: req.params.id,
     });
