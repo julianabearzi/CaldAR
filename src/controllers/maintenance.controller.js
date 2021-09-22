@@ -1,124 +1,179 @@
-const fs = require('fs');
+const models = require('../model');
 
-const maintenances = fs.readFileSync('src/data/maintenance.json');
-let maintenance = JSON.parse(maintenances);
-
-const createMaintenance = (req, res) => {
-  const { id, boiler, date, technicians_list, building } = req.body;
-
-  if (!id || !boiler || !date || !technicians_list || !building) {
-    res.status(400).send('Incomplete fields');
-    return;
-  }
-
-  const newMaintenance = {
-    id,
-    boiler,
-    date,
-    technicians_list,
-    building,
-  };
-
-  maintenance.push(newMaintenance);
-  fs.writeFileSync(
-    'data/maintenance.json',
-    JSON.stringify(maintenance, null, 2)
-  );
-  res.json(newMaintenance);
-};
-
-const getAllMaintenance = (req, res) => {
-  res.json(maintenance);
-};
-
-const getMaintenanceById = (req, res) => {
-  const idFound = maintenance.some((m) => m.id === parseInt(req.params.id));
-
-  if (idFound) {
-    res.json(maintenance.filter((m) => m.id === parseInt(req.params.id)));
-  } else {
-    res
-      .status(400)
-      .json({ msg: `No maintenance with the id ${req.params.id}` });
-  }
-};
-
-const getMaintenanceByBoiler = (req, res) => {
-  const idFound = maintenance.some(
-    (m) => m.boiler.toLowerCase() === req.query.boiler.toLowerCase()
-  );
-
-  if (idFound) {
-    res.json(
-      maintenance.filter(
-        (m) => m.boiler.toLowerCase() === req.query.boiler.toLowerCase()
-      )
-    );
-  } else {
-    res
-      .status(400)
-      .json({ msg: `No maintenance with the boiler ${req.query.boiler}` });
-  }
-};
-
-const updateMaintenance = (req, res) => {
-  const id = parseInt(req.params.id);
-  const {
-    boiler = '',
-    date = '',
-    technicians_list = '',
-    building = '',
-  } = req.body;
-  const maintenanceItem = maintenance.find(
-    (maintenanceItem) => maintenanceItem.id === parseInt(req.params.id)
-  );
-  if (maintenanceItem) {
-    const index = maintenance.indexOf(maintenanceItem);
-    const updatedMaintenance = {
-      id,
-      boiler,
-      date,
-      technicians_list,
-      building,
-    };
-
-    if (!boiler || !date || !technicians_list || !building) {
-      res.status(400).send('Incomplete fields');
-      return;
+const createMaintenance = async (req, res) => {
+  try {
+    const boiler = await models.Boilers.findById(req.body.boiler);
+    if (!boiler) {
+      return res.status(400).json({
+        msg: 'The boiler assigned to maintenance was not found',
+      });
     }
 
-    maintenance[index] = updatedMaintenance;
+    const building = await models.Buildings.findById(req.body.building);
+    if (!building) {
+      return res.status(400).json({
+        msg: 'The building assigned to maintenance was not found',
+      });
+    }
+    const technician = await models.Technicians.findById(req.body.technician);
+    if (!technician) {
+      return res.status(400).json({
+        msg: 'The technician assigned to maintenance was not found',
+      });
+    }
 
-    fs.writeFileSync(
-      'data/maintenance.json',
-      JSON.stringify(maintenance, null, 2)
-    );
-    res.json({ msg: 'Maintenance updated', updatedMaintenance });
-  } else {
-    res
-      .status(400)
-      .json({ msg: `No maintenance with the id of ${req.params.id}` });
+    const maintenance = new models.Maintenance(req.body);
+    const newMaintenance = await maintenance.save();
+
+    return res.status(201).json({
+      data: newMaintenance,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
   }
 };
 
-const deleteMaintenance = (req, res) => {
-  const idFound = maintenance.some((m) => m.id === parseInt(req.params.id));
+const getAllMaintenance = async (req, res) => {
+  try {
+    const response = await models.Maintenance.find();
 
-  if (idFound) {
-    maintenance = maintenance.filter((m) => m.id !== parseInt(req.params.id));
-
-    fs.writeFileSync(
-      'data/maintenance.json',
-      JSON.stringify(maintenance, null, 2)
-    );
-    res.json({ msg: 'Maintenance deleted', maintenance });
-  } else {
-    res
-      .status(400)
-      .json({ msg: `No maintenance with the id of ${req.params.id}` });
+    return res.status(200).json({
+      data: response,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
   }
 };
 
+const getMaintenanceById = async (req, res) => {
+  try {
+    const response = await models.Maintenance.findOne({
+      _id: req.params.id,
+    });
+
+    if (!response || response.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No maintenance with the id of ${req.params.id}`,
+      });
+    }
+
+    return res.status(200).json({
+      data: response,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
+  }
+};
+
+const getMaintenanceByBoiler = async (req, res) => {
+  try {
+    const response = await models.Maintenance.find({
+      boiler: req.query.boiler,
+    });
+
+    if (!response || response.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No maintenance with boiler ${req.query.boiler}`,
+      });
+    }
+    return res.status(200).json({
+      data: response,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
+  }
+};
+
+const updateMaintenance = async (req, res) => {
+  try {
+    const boiler = await models.Boilers.findById(req.body.boiler);
+    if (!boiler) {
+      return res.status(400).json({
+        msg: 'The boiler assigned to maintenance was not found',
+      });
+    }
+
+    const building = await models.Buildings.findById(req.body.building);
+    if (!building) {
+      return res.status(400).json({
+        msg: 'The building assigned to maintenance was not found',
+      });
+    }
+    const technician = await models.Technicians.findById(req.body.technician);
+    if (!technician) {
+      return res.status(400).json({
+        msg: 'The technician assigned to maintenance was not found',
+      });
+    }
+    const MaintenanceUpdated = await models.Maintenance.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    );
+
+    if (!MaintenanceUpdated || MaintenanceUpdated.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No maintenance with the id ${req.params.id}`,
+      });
+    }
+
+    return res.status(201).json({
+      msg: 'Maintenance updated',
+      data: MaintenanceUpdated,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
+  }
+};
+
+const deleteMaintenance = async (req, res) => {
+  try {
+    const MaintenanceFound = await models.Maintenance.findOneAndRemove({
+      _id: req.params.id,
+    });
+
+    if (!MaintenanceFound || MaintenanceFound.length === 0) {
+      return res.status(404).json({
+        error: true,
+        msg: `No maintenance with the id ${req.params.id}`,
+      });
+    }
+
+    return res.status(202).json({
+      msg: 'Maintenance deleted',
+      data: MaintenanceFound,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      msg: error,
+    });
+  }
+};
 module.exports = {
   createMaintenance,
   getAllMaintenance,
