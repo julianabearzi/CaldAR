@@ -11,7 +11,7 @@ const maintenanceRoutes = require('./routes/maintenance.routes');
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
-// const MONGO_URL = process.env.CONNECTION_URL;
+const MONGO_URL = process.env.CONNECTION_URL;
 
 app.use(express.json());
 
@@ -23,9 +23,7 @@ app.use(ConstructionRoutes);
 app.use(maintenanceRoutes);
 
 mongoose
-  .connect(
-    'mongodb+srv://user:H46BjCQFaxgD8UMr@cluster0.taz6e.mongodb.net/CaldAR?retryWrites=true&w=majority'
-  )
+  .connect(MONGO_URL)
   .then(() => {
     console.log('Database connected');
   })
