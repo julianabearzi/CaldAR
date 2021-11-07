@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const boilersCategories = require('./routes/boilers-categories.routes');
 const boilersRoutes = require('./routes/boilers.routes');
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 4000;
 const MONGO_URL = process.env.CONNECTION_URL;
 
 app.use(express.json());
+app.use(cors());
 
 app.use(boilersCategories);
 app.use(boilersRoutes);
