@@ -11,10 +11,7 @@ const createBuilding = async (req, res) => {
     const building = new models.Buildings(req.body);
     const newBuilding = await building.save();
 
-    return res.status(201).json({
-      data: newBuilding,
-      error: false,
-    });
+    return res.status(201).json(newBuilding);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -27,10 +24,7 @@ const getAllBuildings = async (req, res) => {
   try {
     const response = await models.Buildings.find();
 
-    return res.status(200).json({
-      data: response,
-      error: false,
-    });
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -50,10 +44,7 @@ const getBuildingById = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      data: response,
-      error: false,
-    });
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -73,10 +64,7 @@ const getBuildingByName = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      data: response,
-      error: false,
-    });
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -106,11 +94,7 @@ const updateBuilding = async (req, res) => {
       });
     }
 
-    return res.status(201).json({
-      msg: 'Building updated',
-      data: buildingUpdated,
-      error: false,
-    });
+    return res.status(201).json(buildingUpdated);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -140,11 +124,7 @@ const deleteBuilding = async (req, res) => {
       });
     }
 
-    return res.status(202).json({
-      msg: 'Building deleted',
-      data: buildingFound,
-      error: false,
-    });
+    return res.status(202).json(buildingFound);
   } catch (error) {
     return res.status(400).json({
       error: true,
