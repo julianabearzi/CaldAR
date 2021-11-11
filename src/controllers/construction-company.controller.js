@@ -5,10 +5,7 @@ const createConstruction = async (req, res) => {
     const construction = new models.Constructions(req.body);
     const newConstruction = await construction.save();
 
-    return res.status(201).json({
-      data: newConstruction,
-      error: false,
-    });
+    return res.status(201).json(newConstruction);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -21,10 +18,7 @@ const getAllConstructions = async (req, res) => {
   try {
     const response = await models.Constructions.find();
 
-    return res.status(200).json({
-      data: response,
-      error: false,
-    });
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -44,10 +38,7 @@ const getConstructionById = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      data: response,
-      error: false,
-    });
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -69,10 +60,7 @@ const getConstructionByFirstName = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      data: response,
-      error: false,
-    });
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -88,19 +76,13 @@ const updateConstruction = async (req, res) => {
       req.body,
       { new: true }
     );
-
     if (!constructionUpdated || constructionUpdated.length === 0) {
       return res.status(404).json({
         error: true,
         msg: `No construction company with the id ${req.params.id}`,
       });
     }
-
-    return res.status(201).json({
-      msg: 'Construction updated',
-      data: constructionUpdated,
-      error: false,
-    });
+    return res.status(201).json(constructionUpdated);
   } catch (error) {
     return res.status(400).json({
       error: true,
@@ -129,12 +111,7 @@ const deleteConstruction = async (req, res) => {
         msg: `No construction company with the id ${req.params.id}`,
       });
     }
-
-    return res.status(202).json({
-      msg: 'Construction deleted',
-      data: constructionFound,
-      error: false,
-    });
+    return res.status(202).json(constructionFound);
   } catch (error) {
     return res.status(400).json({
       error: true,
